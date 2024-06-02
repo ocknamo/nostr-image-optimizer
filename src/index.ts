@@ -1,5 +1,10 @@
 import { optimizeImage } from "wasm-image-optimization";
-import { getImageUrl } from "./url-parse/url-parse";
+import {
+	getImageUrl,
+	getOptionsMap,
+	getOptionsString,
+} from "./url-parse/url-parse";
+import { allowedMaxImageFileSize, formatMimeTypeMap } from "./const";
 
 export default {
 	async fetch(
@@ -7,8 +12,6 @@ export default {
 		env: Env,
 		ctx: ExecutionContext,
 	): Promise<Response> {
-		// fetch()
-
 		if (request.method !== "GET") {
 			return new Response(null, {
 				status: 405,
@@ -16,7 +19,9 @@ export default {
 			});
 		}
 
-		const path = getImageUrl(request.url);
+		const requestURL = new URL(request.url);
+		const path = getImageUrl(requestURL);
+		const optionsMap = getOptionsMap(getOptionsString(requestURL));
 
 		let pathUrl;
 		// path is should be URL
@@ -41,22 +46,49 @@ export default {
 			});
 		}
 
-		const image: ArrayBuffer = await (await fetch(pathUrl))
-			.arrayBuffer()
-			.then((v) => v);
-		// TODO: gurd file type
+		const response = await fetch(pathUrl);
 
-		// TODO: width=100,height300とかで設定できるようにする
-		// 以下の例のように設定
-		// /width=80,height=100,quality=75,format=webp/uploads/avatar1.jpg
-		// この３つとformatだけでしばらくは良さそう
+		if (!response.ok) {
+			return new Response(null, {
+				status: response.status,
+				statusText: response.statusText,
+			});
+		}
+
+		const image = await response.arrayBuffer();
+
+		if (image.byteLength > allowedMaxImageFileSize) {
+			return new Response(null, {
+				status: 400,
+				statusText: "Bad Request",
+			});
+		}
 
 		const optimized = await optimizeImage({
 			image,
-			width: 100,
-			format: "webp",
+			...optionsMap,
 		});
 
-		return new Response(optimized);
+		const res = new Response(optimized);
+
+		res.headers.append(
+			"Content-Type",
+			formatMimeTypeMap[optionsMap.format ?? "jpeg"],
+		);
+		res.headers.append(
+			"Cache-Control",
+			"public, max-age=3600, stale-while-revalidate=7200, stale-if-error=3600, s-maxage=1209600",
+		);
+
+		const etag = response.headers.get("ETAG");
+		if (etag) {
+			res.headers.append("ETAG", etag);
+		}
+		const lastModified = response.headers.get("LAST-MODIFIED");
+		if (lastModified) {
+			res.headers.append("LAST-MODIFIED", lastModified);
+		}
+
+		return res;
 	},
 };
