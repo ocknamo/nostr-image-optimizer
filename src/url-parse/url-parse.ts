@@ -4,7 +4,7 @@ import {
 	formats,
 	imageNumberOptionKeys,
 	imageOptionKeys,
-} from "../const";
+} from "../constants";
 
 export function getImageUrl(url: URL): string {
 	const match = /https\:\/\/.+$/.exec(url.pathname) ?? "";

@@ -9,7 +9,8 @@
     "test": "vitest",
     "ci:test": "vitest run",
     "cf-typegen": "wrangler types",
-    "format": "biome format --write ./src"
+    "format": "biome format --write ./src",
+    "build": "tsc -p ./tsconfig.json"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.7.3",

@@ -4,7 +4,7 @@ import {
 	getOptionsMap,
 	getOptionsString,
 } from "./url-parse/url-parse";
-import { allowedMaxImageFileSize, formatMimeTypeMap } from "./const";
+import { allowedMaxImageFileSize, formatMimeTypeMap } from "./constants";
 
 export default {
 	async fetch(

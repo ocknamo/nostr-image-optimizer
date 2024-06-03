@@ -1,9 +1,4 @@
-// TODO: Use for type check
 export type AllowedImageMimeType = "image/png" | "image/jpeg" | "image/webp";
-export const allowedImageMimeTypes: AllowedImageMimeType[] = [
-	"image/png",
-	"image/jpeg",
-];
 
 // 100MB
 export const allowedMaxImageFileSize = 1024 * 1024 * 100;
