@@ -1,13 +1,53 @@
 import { describe, expect, it } from "vitest";
-import { getImageUrl, getOptionsMap, getOptionsString } from "./url-parse";
+import {
+	getImageUrl,
+	getOptionsMap,
+	getOptionsString,
+	matchParentPath,
+} from "./url-parse";
 
 describe("url-parse", () => {
+	describe("matchParentPath", () => {
+		it("it is matched parent path.", () => {
+			expect(
+				matchParentPath(
+					new URL(
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/image/width=80,height=100,quality=75,format=webp/https://image.nostr.build/test.jpg",
+					),
+					"image",
+				),
+			).toBe(true);
+		});
+
+		it("it is matched parent path without options.", () => {
+			expect(
+				matchParentPath(
+					new URL(
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/image//https://image.nostr.build/test.jpg",
+					),
+					"image",
+				),
+			).toBe(true);
+		});
+
+		it("it is not matched path with invalid path.", () => {
+			expect(
+				matchParentPath(
+					new URL(
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/invalid//https://image.nostr.build/test.jpg",
+					),
+					"image",
+				),
+			).toBe(false);
+		});
+	});
+
 	describe("getImageUrl", () => {
 		it("should get image full url with options.", () => {
 			expect(
 				getImageUrl(
 					new URL(
-						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/width=80,height=100,quality=75,format=webp/https://image.nostr.build/test.jpg",
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/image/width=80,height=100,quality=75,format=webp/https://image.nostr.build/test.jpg",
 					),
 				),
 			).toBe("https://image.nostr.build/test.jpg");
@@ -17,7 +57,7 @@ describe("url-parse", () => {
 			expect(
 				getImageUrl(
 					new URL(
-						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev//https://image.nostr.build/test.jpg",
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/image//https://image.nostr.build/test.jpg",
 					),
 				),
 			).toBe("https://image.nostr.build/test.jpg");
@@ -29,7 +69,7 @@ describe("url-parse", () => {
 			expect(
 				getOptionsString(
 					new URL(
-						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/width=80,height=100,quality=75,format=webp/https://image.nostr.build/test.jpg",
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/image/width=80,height=100,quality=75,format=webp/https://image.nostr.build/test.jpg",
 					),
 				),
 			).toBe("width=80,height=100,quality=75,format=webp");
@@ -39,7 +79,7 @@ describe("url-parse", () => {
 			expect(
 				getOptionsString(
 					new URL(
-						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev//https://image.nostr.build/test.jpg",
+						"https://remote-url-img-optimaization-cf-worker.s14pes.workers.dev/image//https://image.nostr.build/test.jpg",
 					),
 				),
 			).toBe("");

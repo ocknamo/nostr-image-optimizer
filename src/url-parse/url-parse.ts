@@ -6,14 +6,20 @@ import {
 	imageOptionKeys,
 } from "../constants";
 
+export function matchParentPath(url: URL, parent: string = "image"): boolean {
+	const match = new RegExp(`(?<=^\/)${parent}`).exec(url.pathname);
+
+	return match && match[0] ? match[0] === parent : false;
+}
+
 export function getImageUrl(url: URL): string {
-	const match = /https\:\/\/.+$/.exec(url.pathname) ?? "";
+	const match = /https\:\/\/.+$/.exec(url.pathname);
 
 	return match && match[0] ? match[0] : "";
 }
 
 export function getOptionsString(url: URL): string {
-	const match = /(?<=^\/)[^\/]+(?=\/)/.exec(url.pathname);
+	const match = /(?<=^\/image\/)[^\/]+(?=\/)/.exec(url.pathname);
 
 	return match && match[0] ? match[0] : "";
 }

@@ -3,6 +3,7 @@ import {
 	getImageUrl,
 	getOptionsMap,
 	getOptionsString,
+	matchParentPath,
 } from "./url-parse/url-parse";
 import { allowedMaxImageFileSize, formatMimeTypeMap } from "./constants";
 
@@ -20,6 +21,15 @@ export default {
 		}
 
 		const requestURL = new URL(request.url);
+
+		// parent path should be `image`
+		if (!matchParentPath(requestURL, "image")) {
+			return new Response(null, {
+				status: 400,
+				statusText: "Bad Request",
+			});
+		}
+
 		const path = getImageUrl(requestURL);
 		const optionsMap = getOptionsMap(getOptionsString(requestURL));
 
