@@ -77,7 +77,7 @@ export default {
 		);
 		res.headers.append(
 			"Cache-Control",
-			"public, max-age=3600, stale-while-revalidate=7200, stale-if-error=3600, s-maxage=1209600",
+			"public, max-age=86400, stale-while-revalidate=7200, stale-if-error=3600, s-maxage=1209600",
 		);
 
 		const etag = response.headers.get("ETAG");
