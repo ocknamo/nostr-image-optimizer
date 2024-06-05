@@ -1,5 +1,5 @@
 {
-  "name": "remote-url-img-optimaization-cf-worker",
+  "name": "nostr-image-optimizer",
   "version": "0.0.0",
   "private": true,
   "scripts": {
