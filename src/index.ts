@@ -5,7 +5,17 @@ import {
 	getOptionsString,
 	matchParentPath,
 } from "./url-parse/url-parse";
-import { allowedMaxImageFileSize, formatMimeTypeMap } from "./constants";
+import {
+	allowedMaxImageFileSize,
+	formatMimeTypeMap,
+	formats,
+} from "./constants";
+import {
+	formatGuard,
+	heightGuard,
+	qualityGuard,
+	widthGuard,
+} from "./options-guards";
 
 export default {
 	async fetch(
@@ -38,6 +48,19 @@ export default {
 		try {
 			pathUrl = new URL(path);
 		} catch (error) {
+			return new Response(null, {
+				status: 400,
+				statusText: "Bad Request",
+			});
+		}
+
+		// options gurds
+		if (
+			!qualityGuard(optionsMap.quality) ||
+			!widthGuard(optionsMap.width) ||
+			!heightGuard(optionsMap.height) ||
+			!formatGuard(optionsMap.format)
+		) {
 			return new Response(null, {
 				status: 400,
 				statusText: "Bad Request",
