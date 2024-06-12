@@ -67,18 +67,6 @@ export default {
 			});
 		}
 
-		// url should be image. eg png, jpg, jpeg.
-		if (
-			!pathUrl.href.endsWith(".png") &&
-			!pathUrl.href.endsWith(".jpg") &&
-			!pathUrl.href.endsWith(".jpeg")
-		) {
-			return new Response(null, {
-				status: 400,
-				statusText: "Bad Request",
-			});
-		}
-
 		const response = await fetch(pathUrl);
 
 		if (!response.ok) {
