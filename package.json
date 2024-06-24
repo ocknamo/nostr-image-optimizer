@@ -10,6 +10,7 @@
     "ci:test": "vitest run",
     "cf-typegen": "wrangler types",
     "format": "biome format --write ./src",
+    "lint": "biome lint --error-on-warnings ./src",
     "build": "tsc -p ./tsconfig.json"
   },
   "devDependencies": {
@@ -22,5 +23,8 @@
   },
   "dependencies": {
     "wasm-image-optimization": "^1.0.1"
+  },
+  "volta": {
+    "node": "20.15.0"
   }
 }

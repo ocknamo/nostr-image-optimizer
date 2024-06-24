@@ -1,4 +1,4 @@
-import { Format, formats } from "./constants";
+import { Format, formats } from './constants';
 
 export function qualityGuard(quality: number | undefined): boolean {
 	if (!quality) {

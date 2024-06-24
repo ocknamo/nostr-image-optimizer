@@ -4,9 +4,9 @@ import {
 	formats,
 	imageNumberOptionKeys,
 	imageOptionKeys,
-} from "../constants";
+} from '../constants';
 
-export function matchParentPath(url: URL, parent: string = "image"): boolean {
+export function matchParentPath(url: URL, parent: string = 'image'): boolean {
 	const match = new RegExp(`(?<=^\/)${parent}`).exec(url.pathname);
 
 	return match && match[0] ? match[0] === parent : false;
@@ -15,13 +15,13 @@ export function matchParentPath(url: URL, parent: string = "image"): boolean {
 export function getImageUrl(url: URL): string {
 	const match = /https\:\/\/.+$/.exec(url.pathname);
 
-	return match && match[0] ? match[0] : "";
+	return match && match[0] ? match[0] : '';
 }
 
 export function getOptionsString(url: URL): string {
 	const match = /(?<=^\/image\/)[^\/]+(?=\/)/.exec(url.pathname);
 
-	return match && match[0] ? match[0] : "";
+	return match && match[0] ? match[0] : '';
 }
 
 export function getOptionsMap(optionsString: string): ImageOptions {
@@ -30,7 +30,7 @@ export function getOptionsMap(optionsString: string): ImageOptions {
 		return res;
 	}
 
-	const arr = optionsString.split(",").map((str) => str.split("="));
+	const arr = optionsString.split(',').map((str) => str.split('='));
 
 	imageOptionKeys.forEach((key) => {
 		const target = arr.find((op) => op[0] === key);
