@@ -1,14 +1,15 @@
-export type AllowedImageMimeType = "image/png" | "image/jpeg" | "image/webp";
+export type AllowedImageMimeType = 'image/png' | 'image/jpeg' | 'image/webp';
 
-// 100MB
-export const allowedMaxImageFileSize = 1024 * 1024 * 100;
+// TODO: inject from config.
+// 5MB
+export const allowedMaxImageFileSize = 1024 * 1024 * 5;
 
-export type Format = "webp" | "jpeg" | "png";
-export const formats: Format[] = ["webp", "jpeg", "png"];
+export type Format = 'webp' | 'jpeg' | 'png';
+export const formats: Format[] = ['webp', 'jpeg', 'png'];
 export const formatMimeTypeMap: Record<Format, AllowedImageMimeType> = {
-	jpeg: "image/jpeg",
-	png: "image/png",
-	webp: "image/webp",
+	jpeg: 'image/jpeg',
+	png: 'image/png',
+	webp: 'image/webp',
 };
 
 export interface ImageOptions {
@@ -19,14 +20,14 @@ export interface ImageOptions {
 }
 
 export const imageOptionKeys: (keyof ImageOptions)[] = [
-	"width",
-	"height",
-	"quality",
-	"format",
+	'width',
+	'height',
+	'quality',
+	'format',
 ];
 
 export const imageNumberOptionKeys: (keyof ImageOptions)[] = [
-	"width",
-	"height",
-	"quality",
+	'width',
+	'height',
+	'quality',
 ];
