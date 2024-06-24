@@ -1,3 +1,3 @@
-# nostr-image-optimizer
+# WIP: nostr-image-optimizer
 
 TBD
