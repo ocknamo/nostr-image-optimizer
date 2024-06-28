@@ -32,6 +32,7 @@ export default {
 
 		const requestURL = new URL(request.url);
 
+		// TODO: set from config.
 		// parent path should be `image`
 		if (!matchParentPath(requestURL, 'image')) {
 			return new Response(null, {
@@ -105,7 +106,7 @@ export default {
 
 		res.headers.append(
 			'Content-Type',
-			formatMimeTypeMap[optionsMap.format ?? 'jpeg'],
+			formatMimeTypeMap[optionsMap.format ?? 'webp'],
 		);
 		res.headers.append(
 			'Cache-Control',
