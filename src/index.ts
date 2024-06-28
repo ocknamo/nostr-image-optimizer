@@ -44,12 +44,12 @@ export default {
 		const path = getImageUrl(requestURL);
 		const optionsMap = getOptionsMap(getOptionsString(requestURL));
 
-		let pathUrl;
+		let pathUrl: URL;
 		// path is should be URL
 		try {
 			pathUrl = new URL(path);
 		} catch (error) {
-			console.warn(`Invalid url: `, path);
+			console.warn('Invalid url: ', path);
 			return new Response(null, {
 				status: 400,
 				statusText: 'Bad Request',
@@ -63,7 +63,7 @@ export default {
 			!heightGuard(optionsMap.height) ||
 			!formatGuard(optionsMap.format)
 		) {
-			console.warn(`Invalid request option: `, optionsMap);
+			console.warn('Invalid request option: ', optionsMap);
 			return new Response(null, {
 				status: 400,
 				statusText: 'Bad Request',
