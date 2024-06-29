@@ -32,6 +32,20 @@ export default {
 
 		const requestURL = new URL(request.url);
 
+		// cache
+		const cacheKey = new Request(requestURL.toString(), request);
+		const cache = caches.default;
+		const cacheResponse = await cache.match(cacheKey);
+
+		if (cacheResponse) {
+			console.info(`Cache hit for: ${request.url}.`);
+			return cacheResponse;
+		}
+
+		console.info(
+			`Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
+		);
+
 		// TODO: set from config.
 		// parent path should be `image`
 		if (!matchParentPath(requestURL, 'image')) {
@@ -123,6 +137,9 @@ export default {
 		}
 
 		// TODO: Add CORS header
+
+		// Set chache
+		ctx.waitUntil(cache.put(cacheKey, res.clone()));
 
 		return res;
 	},
