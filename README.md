@@ -2,8 +2,7 @@
 
 Worker proxy to change the size and quality of the image form remote image.
 
-
-## Usage
+Images can be converted and resized by requesting them via a specially formatted URL. This way, you do not need to write any code, just change the HTML markup on your website to use the new URL. The format is as follows:
 
 `<optimazerUrl>/image/width=<number>,height=<number>,quality=<number>,format=<string>/<originalImageUrl>`
 
