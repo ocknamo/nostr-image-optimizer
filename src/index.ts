@@ -85,7 +85,7 @@ export default {
 		}
 
 		console.info('start fetch to: ', pathUrl);
-		const response = await fetch(pathUrl);
+		const response = await fetch(pathUrl, { headers: request.headers });
 		console.info('end fetch');
 
 		if (!response.ok) {
