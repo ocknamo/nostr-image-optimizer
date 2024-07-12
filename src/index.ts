@@ -7,6 +7,7 @@ import {
 } from './url-parse/url-parse';
 import {
 	allowedMaxImageFileSize,
+	allowedMinImageFileSize,
 	formatMimeTypeMap,
 	formats,
 } from './constants';
@@ -104,9 +105,12 @@ export default {
 		const image = await response.arrayBuffer();
 		console.info('end getting arrayBuffer');
 
-		if (image.byteLength > allowedMaxImageFileSize) {
+		if (
+			image.byteLength > allowedMaxImageFileSize ||
+			image.byteLength < allowedMinImageFileSize
+		) {
 			console.warn(
-				`Exceed image file size limit. Image byte length is: ${image.byteLength}`,
+				`The image file size limit is violated. Image byte length is: ${image.byteLength}`,
 			);
 			return new Response(null, {
 				status: 400,
