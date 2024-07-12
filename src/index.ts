@@ -17,6 +17,8 @@ import {
 	widthGuard,
 } from './options-guards';
 
+const REMOTE_TIME_OUT = 5000;
+
 export default {
 	async fetch(
 		request: Request,
@@ -85,7 +87,10 @@ export default {
 		}
 
 		console.info('start fetch to: ', pathUrl);
-		const response = await fetch(pathUrl, { headers: request.headers });
+		const response = await fetch(pathUrl, {
+			headers: request.headers,
+			signal: AbortSignal.timeout(REMOTE_TIME_OUT),
+		});
 		console.info('end fetch');
 
 		if (!response.ok) {
