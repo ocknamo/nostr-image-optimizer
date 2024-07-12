@@ -105,10 +105,7 @@ export default {
 		const image = await response.arrayBuffer();
 		console.info('end getting arrayBuffer');
 
-		if (
-			image.byteLength > allowedMaxImageFileSize ||
-			image.byteLength < allowedMinImageFileSize
-		) {
+		if (image.byteLength > allowedMaxImageFileSize) {
 			console.warn(
 				`The image file size limit is violated. Image byte length is: ${image.byteLength}`,
 			);
@@ -116,6 +113,19 @@ export default {
 				status: 400,
 				statusText: 'Bad Request',
 			});
+		}
+
+		if (image.byteLength < allowedMinImageFileSize) {
+			console.warn(
+				`The image is returned as is because the image size is smaller than the minimum. Image byte length is: ${image.byteLength}`,
+			);
+
+			const res = new Response(image, { headers: response.headers });
+
+			// Set chache
+			ctx.waitUntil(cache.put(cacheKey, res.clone()));
+
+			return res;
 		}
 
 		console.info('start optimizeImage');
