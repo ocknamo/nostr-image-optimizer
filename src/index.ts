@@ -109,10 +109,15 @@ export default {
 			console.warn(
 				`The image file size limit is violated. Image byte length is: ${image.byteLength}`,
 			);
-			return new Response(null, {
+			const errRes = new Response(null, {
 				status: 400,
 				statusText: 'Bad Request',
 			});
+
+			// Set chache
+			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
+
+			return errRes;
 		}
 
 		if (image.byteLength < allowedMinImageFileSize) {
@@ -120,12 +125,12 @@ export default {
 				`The image is returned as is because the image size is smaller than the minimum. Image byte length is: ${image.byteLength}`,
 			);
 
-			const res = new Response(image, { headers: response.headers });
+			const errRes = new Response(image, { headers: response.headers });
 
 			// Set chache
-			ctx.waitUntil(cache.put(cacheKey, res.clone()));
+			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
 
-			return res;
+			return errRes;
 		}
 
 		console.info('start optimizeImage');
@@ -153,6 +158,22 @@ export default {
 		const lastModified = response.headers.get('LAST-MODIFIED');
 		if (lastModified) {
 			res.headers.append('LAST-MODIFIED', lastModified);
+		}
+
+		if (optimized?.byteLength && optimized.byteLength > image.byteLength) {
+			console.info(
+				`Invalid optimize result. Original image byte length: ${image.byteLength}. Optimized image byte length: ${optimized?.byteLength}`,
+			);
+
+			const errRes = new Response(null, {
+				status: 400,
+				statusText: 'Bad Request',
+			});
+
+			// Set cache
+			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
+
+			return errRes;
 		}
 
 		// TODO: Add CORS header
