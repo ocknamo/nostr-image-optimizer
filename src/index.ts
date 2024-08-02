@@ -8,6 +8,7 @@ import {
 import {
 	allowedMaxImageFileSize,
 	allowedMinImageFileSize,
+	allowedOptimizedFileSizeBuffer,
 	formatMimeTypeMap,
 	formats,
 } from './constants';
@@ -140,6 +141,25 @@ export default {
 		});
 		console.info('end optimizeImage');
 
+		if (
+			optimized?.byteLength &&
+			optimized.byteLength + allowedOptimizedFileSizeBuffer > image.byteLength
+		) {
+			console.info(
+				`Invalid optimize result. Original image byte length: ${image.byteLength}. Optimized image byte length: ${optimized?.byteLength}`,
+			);
+
+			const errRes = new Response(null, {
+				status: 400,
+				statusText: 'Bad Request',
+			});
+
+			// Set cache
+			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
+
+			return errRes;
+		}
+
 		const res = new Response(optimized);
 
 		res.headers.append(
@@ -158,22 +178,6 @@ export default {
 		const lastModified = response.headers.get('LAST-MODIFIED');
 		if (lastModified) {
 			res.headers.append('LAST-MODIFIED', lastModified);
-		}
-
-		if (optimized?.byteLength && optimized.byteLength > image.byteLength) {
-			console.info(
-				`Invalid optimize result. Original image byte length: ${image.byteLength}. Optimized image byte length: ${optimized?.byteLength}`,
-			);
-
-			const errRes = new Response(null, {
-				status: 400,
-				statusText: 'Bad Request',
-			});
-
-			// Set cache
-			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
-
-			return errRes;
 		}
 
 		// TODO: Add CORS header
