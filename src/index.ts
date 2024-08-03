@@ -126,7 +126,10 @@ export default {
 				`The image is returned as is because the image size is smaller than the minimum. Image byte length is: ${image.byteLength}`,
 			);
 
-			const errRes = new Response(image, { headers: response.headers });
+			const errRes = new Response(null, {
+				status: 400,
+				statusText: 'Bad Request',
+			});
 
 			// Set chache
 			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
