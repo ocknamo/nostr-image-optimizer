@@ -1,12 +1,10 @@
 export type AllowedImageMimeType = 'image/png' | 'image/jpeg' | 'image/webp';
 
 // TODO: inject from config.
-// 5MB
-export const allowedMaxImageFileSize = 1024 * 1024 * 5;
+// 4MB
+export const allowedMaxImageFileSize = 1024 * 1024 * 4;
 // 100kB
 export const allowedMinImageFileSize = 1024 * 100;
-// 10kB
-export const allowedOptimizedFileSizeBuffer = 1024 * 10;
 
 export type Format = 'webp' | 'jpeg' | 'png';
 export const formats: Format[] = ['webp', 'jpeg', 'png'];

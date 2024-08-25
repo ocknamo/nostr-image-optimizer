@@ -5,19 +5,14 @@ import {
 	getOptionsString,
 	matchParentPath,
 } from './url-parse/url-parse';
-import {
-	allowedMaxImageFileSize,
-	allowedMinImageFileSize,
-	allowedOptimizedFileSizeBuffer,
-	formatMimeTypeMap,
-	formats,
-} from './constants';
+import { allowedMaxImageFileSize, allowedMinImageFileSize } from './constants';
 import {
 	formatGuard,
 	heightGuard,
 	qualityGuard,
 	widthGuard,
 } from './options-guards';
+import { appendCustomHeaders } from './header';
 
 const REMOTE_TIME_OUT = 5000;
 
@@ -108,33 +103,30 @@ export default {
 
 		if (image.byteLength > allowedMaxImageFileSize) {
 			console.warn(
-				`The image file size limit is violated. Image byte length is: ${image.byteLength}`,
+				`Return original image, because the image file size limit is violated. Image byte length is: ${image.byteLength}`,
 			);
-			const errRes = new Response(null, {
-				status: 400,
-				statusText: 'Bad Request',
-			});
+
+			let res = new Response(image);
+			res = appendCustomHeaders(res, response, optionsMap);
 
 			// Set chache
-			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
+			ctx.waitUntil(cache.put(cacheKey, res.clone()));
 
-			return errRes;
+			return res;
 		}
 
 		if (image.byteLength < allowedMinImageFileSize) {
 			console.warn(
-				`The image is returned as is because the image size is smaller than the minimum. Image byte length is: ${image.byteLength}`,
+				`Return original image because the image size is smaller than the minimum. Image byte length is: ${image.byteLength}`,
 			);
 
-			const errRes = new Response(null, {
-				status: 400,
-				statusText: 'Bad Request',
-			});
+			let res = new Response(image);
+			res = appendCustomHeaders(res, response, optionsMap);
 
 			// Set chache
-			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
+			ctx.waitUntil(cache.put(cacheKey, res.clone()));
 
-			return errRes;
+			return res;
 		}
 
 		console.info('start optimizeImage');
@@ -144,46 +136,8 @@ export default {
 		});
 		console.info('end optimizeImage');
 
-		if (
-			optimized?.byteLength &&
-			optimized.byteLength + allowedOptimizedFileSizeBuffer > image.byteLength
-		) {
-			console.info(
-				`Invalid optimize result. Original image byte length: ${image.byteLength}. Optimized image byte length: ${optimized?.byteLength}`,
-			);
-
-			const errRes = new Response(null, {
-				status: 400,
-				statusText: 'Bad Request',
-			});
-
-			// Set cache
-			ctx.waitUntil(cache.put(cacheKey, errRes.clone()));
-
-			return errRes;
-		}
-
-		const res = new Response(optimized);
-
-		res.headers.append(
-			'Content-Type',
-			formatMimeTypeMap[optionsMap.format ?? 'webp'],
-		);
-		res.headers.append(
-			'Cache-Control',
-			'public, max-age=86400, stale-while-revalidate=7200, stale-if-error=3600, s-maxage=1209600',
-		);
-
-		const etag = response.headers.get('ETAG');
-		if (etag) {
-			res.headers.append('ETAG', etag);
-		}
-		const lastModified = response.headers.get('LAST-MODIFIED');
-		if (lastModified) {
-			res.headers.append('LAST-MODIFIED', lastModified);
-		}
-
-		// TODO: Add CORS header
+		let res = new Response(optimized);
+		res = appendCustomHeaders(res, response, optionsMap);
 
 		// Set chache
 		ctx.waitUntil(cache.put(cacheKey, res.clone()));
