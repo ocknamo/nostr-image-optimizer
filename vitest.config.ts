@@ -7,5 +7,6 @@ export default defineWorkersConfig({
         wrangler: { configPath: "./wrangler.toml" },
       },
     },
+    globalSetup: './test/globalSetup.ts'
   },
 });

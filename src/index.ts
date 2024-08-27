@@ -83,7 +83,7 @@ export default {
 			});
 		}
 
-		console.info('start fetch to: ', pathUrl);
+		console.info('start fetch to: ', pathUrl.origin);
 		const response = await fetch(pathUrl, {
 			headers: request.headers,
 			signal: AbortSignal.timeout(REMOTE_TIME_OUT),
