@@ -69,7 +69,16 @@ export default {
 			});
 		}
 
-		// options gurds
+		// Recursive requests guard
+		if (requestURL.origin === pathUrl.origin) {
+			console.warn('Invalid recursive requests. url: ', path);
+			return new Response(null, {
+				status: 400,
+				statusText: 'Bad Request',
+			});
+		}
+
+		// options guards
 		if (
 			!qualityGuard(optionsMap.quality) ||
 			!widthGuard(optionsMap.width) ||
@@ -83,7 +92,7 @@ export default {
 			});
 		}
 
-		console.info('start fetch to: ', pathUrl.origin);
+		console.info('start fetch to: ', pathUrl.href);
 		const response = await fetch(pathUrl, {
 			headers: request.headers,
 			signal: AbortSignal.timeout(REMOTE_TIME_OUT),
