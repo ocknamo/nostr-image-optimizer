@@ -5,7 +5,6 @@ import {
 	getOptionsString,
 	matchParentPath,
 } from './url-parse/url-parse';
-import { allowedMaxImageFileSize, allowedMinImageFileSize } from './constants';
 import {
 	formatGuard,
 	heightGuard,
@@ -14,7 +13,15 @@ import {
 } from './options-guards';
 import { appendCustomHeaders } from './header';
 
+// TODO: inject from config.
+// parent path should be `image`
 const REMOTE_TIME_OUT = 5000;
+const PARENT_PATH = 'image';
+
+// 4MB
+const MAX_IMAGE_FILE_SIZE = 1024 * 1024 * 4;
+// 40kB
+const MIN_IMAGE_FILE_SIZE = 1024 * 40;
 
 export default {
 	async fetch(
@@ -45,9 +52,7 @@ export default {
 			`Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
 		);
 
-		// TODO: set from config.
-		// parent path should be `image`
-		if (!matchParentPath(requestURL, 'image')) {
+		if (!matchParentPath(requestURL, PARENT_PATH)) {
 			return new Response(null, {
 				status: 400,
 				statusText: 'Bad Request',
@@ -110,7 +115,7 @@ export default {
 		const image = await response.arrayBuffer();
 		console.info('end getting arrayBuffer');
 
-		if (image.byteLength > allowedMaxImageFileSize) {
+		if (image.byteLength > MAX_IMAGE_FILE_SIZE) {
 			console.warn(
 				`Return original image, because the image file size limit is violated. Image byte length is: ${image.byteLength}`,
 			);
@@ -124,7 +129,7 @@ export default {
 			return res;
 		}
 
-		if (image.byteLength < allowedMinImageFileSize) {
+		if (image.byteLength < MIN_IMAGE_FILE_SIZE) {
 			console.warn(
 				`Return original image because the image size is smaller than the minimum. Image byte length is: ${image.byteLength}`,
 			);
