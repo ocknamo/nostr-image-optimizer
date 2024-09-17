@@ -60,9 +60,9 @@ export default {
 		let pathUrl: URL;
 		// path is should be URL
 		try {
-			pathUrl = new URL(path);
+			pathUrl = new URL(path + requestURL.search);
 		} catch (error) {
-			console.warn('Invalid url: ', path);
+			console.warn('Invalid url: ', path + requestURL.search);
 			return new Response(null, {
 				status: 400,
 				statusText: 'Bad Request',
