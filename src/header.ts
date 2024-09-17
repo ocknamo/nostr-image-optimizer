@@ -13,6 +13,8 @@ export function appendCustomHeaders(
 		'Content-Type',
 		formatMimeTypeMap[optionsMap.format ?? 'webp'],
 	);
+
+	// TODO: Inject from config
 	res.headers.append(
 		'Cache-Control',
 		'public, max-age=86400, stale-while-revalidate=7200, stale-if-error=3600, s-maxage=1209600',
