@@ -13,7 +13,8 @@ export function matchParentPath(url: URL, parent = 'image'): boolean {
 }
 
 export function getImageUrl(url: URL): string {
-	const match = /https\:\/\/.+$/.exec(url.pathname);
+	console.log('HOGE path name', url.pathname);
+	const match = /https\:\/.+$/.exec(url.pathname);
 
 	return match?.[0] ? match[0] : '';
 }

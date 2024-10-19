@@ -53,6 +53,16 @@ describe('url-parse', () => {
 			).toBe('https://image.nostr.build/test.jpg');
 		});
 
+		it('should get image full url with single slash', () => {
+			expect(
+				getImageUrl(
+					new URL(
+						'https://nostr-image-optimizer.s14pes.workers.dev/image/width=80,height=100,quality=75,format=webp/https:/image.nostr.build/test.jpg',
+					),
+				),
+			).toBe('https:/image.nostr.build/test.jpg');
+		});
+
 		it('should get image full url without options.', () => {
 			expect(
 				getImageUrl(
